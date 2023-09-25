@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  .text-gradient {
+    @apply bg-gradient-to-r from-orange-400 to-pink-600 text-transparent bg-clip-text;
+  }
+}
+
+@layer utilities {
+  .pause {
+    animation-play-state: paused;
+  }
+}
