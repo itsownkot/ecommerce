@@ -5,9 +5,11 @@ import { BsBagCheckFill } from "react-icons/bs";
 import { useGlobal } from "@/lib/context";
 import { useEffect } from "react";
 import { shoot } from "@/lib/confetti";
+import { GlobalContextType } from "@/types/Context";
 
 const SuccessPage = () => {
-  const { setCartItems, setTotalPrice, setTotalQuantity } = useGlobal();
+  const { setCartItems, setTotalPrice, setTotalQuantity } =
+    useGlobal() as GlobalContextType;
 
   useEffect(() => {
     setCartItems([]);
