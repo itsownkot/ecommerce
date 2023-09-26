@@ -2,17 +2,18 @@
 
 import { createContext, useContext, useState, useReducer } from "react";
 import { toast } from "react-hot-toast";
-import { Context } from "@/types/Context";
+import { GlobalContextType } from "@/types/Context";
+import { ProductItem } from "@/types/Product";
 
-const GlobalContext = createContext({});
+const GlobalContext = createContext<GlobalContextType | null>(null!);
 
-enum AmountActions {
+export enum AmountActions {
   INCREASE_AMOUNT = "INCREASE_AMOUNT",
   DECREASE_AMOUNT = "DECREASE_AMOUNT",
   RESET_AMOUNT = "RESET_AMOUNT",
 }
 
-const reducer = (state: number, action: { type: string }) => {
+const reducer = (state: number, action: { type: AmountActions }) => {
   if (action.type === AmountActions.INCREASE_AMOUNT) return state + 1;
   if (action.type === AmountActions.DECREASE_AMOUNT) {
     if (state === 1) return 1;
@@ -28,13 +29,13 @@ export default function ContextProvider({
   children: React.ReactNode;
 }) {
   const [showCart, setShowCart] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState<ProductItem[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
   // FIXME: перенести в productdetails?? NOTE: хотя я тут добавил сброс amount
   const [amount, dispatch] = useReducer(reducer, 1);
 
-  const addToCart = (product, amount) => {
+  const addToCart = (product: ProductItem, amount: number) => {
     const productInCart = cartItems.find((item) => product._id === item._id);
 
     setTotalPrice((prev) => prev + product.price * amount);
@@ -44,7 +45,7 @@ export default function ContextProvider({
       setCartItems((prev) => {
         return prev.map((item) => {
           if (item._id === product._id)
-            return { ...item, amount: item.amount + amount };
+            return { ...item, amount: (item.amount as number) + amount };
           else return item;
         });
       });
@@ -56,7 +57,10 @@ export default function ContextProvider({
     dispatch({ type: AmountActions.RESET_AMOUNT });
   };
 
-  const changeCartQuantity = (product, action) => {
+  const changeCartQuantity = (
+    product: ProductItem,
+    action: "DECREASE" | "INCREASE" | "REMOVE"
+  ) => {
     // Decrease
     if (action === "DECREASE") {
       setTotalPrice((prev) => prev - product.price);
@@ -70,7 +74,7 @@ export default function ContextProvider({
       setCartItems(() => {
         return cartItems.map((item) => {
           if (item._id === product._id) {
-            return { ...item, amount: item.amount - 1 };
+            return { ...item, amount: (item.amount as number) - 1 };
           } else return item;
         });
       });
@@ -82,15 +86,17 @@ export default function ContextProvider({
       setCartItems(() => {
         return cartItems.map((item) => {
           if (item._id === product._id) {
-            return { ...item, amount: item.amount + 1 };
+            return { ...item, amount: (item.amount as number) + 1 };
           } else return item;
         });
       });
     }
     // Remove
     if (action === "REMOVE") {
-      setTotalPrice((prev) => prev - product.price * product.amount);
-      setTotalQuantity((prev) => prev - product.amount);
+      setTotalPrice(
+        (prev) => prev - product.price * (product.amount as number)
+      );
+      setTotalQuantity((prev) => prev - (product.amount as number));
       setCartItems((prev) => prev.filter((item) => item._id !== product._id));
       return;
     }
@@ -100,15 +106,15 @@ export default function ContextProvider({
     showCart,
     setShowCart,
     cartItems,
+    setCartItems,
     totalPrice,
+    setTotalPrice,
     totalQuantity,
+    setTotalQuantity,
     amount,
     dispatch,
     addToCart,
     changeCartQuantity,
-    setCartItems,
-    setTotalPrice,
-    setTotalQuantity,
   };
 
   return (

@@ -6,6 +6,7 @@ export type ProductItem = {
   price: number;
   description: string;
   images: string[];
+  amount?: number;
 };
 
 export type BannerItem = {

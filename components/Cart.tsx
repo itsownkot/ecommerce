@@ -11,10 +11,14 @@ import { TiDeleteOutline } from "react-icons/ti";
 import toast from "react-hot-toast";
 import { FunctionExpression } from "typescript";
 import Link from "next/link";
+import { GlobalContextType } from "@/types/Context";
 
 type Props = {
   product: ProductItem;
-  changeQuantity: FunctionExpression;
+  changeQuantity: (
+    product: ProductItem,
+    action: "DECREASE" | "INCREASE" | "REMOVE"
+  ) => void;
 };
 
 const CartItem = ({ product, changeQuantity }: Props) => {
@@ -69,7 +73,7 @@ const Cart = () => {
     totalPrice,
     totalQuantity,
     changeCartQuantity,
-  } = useGlobal();
+  } = useGlobal() as GlobalContextType;
 
   return (
     <div className="w-[100%] fixed top-0 left-0 z-10">

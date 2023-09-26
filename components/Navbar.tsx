@@ -4,9 +4,11 @@ import { AiOutlineShopping } from "react-icons/ai";
 import { useContext } from "react";
 import { useGlobal } from "@/lib/context";
 import Cart from "./Cart";
+import { GlobalContextType } from "@/types/Context";
 
 const Navbar = () => {
-  const { showCart, setShowCart, totalQuantity } = useGlobal();
+  const { showCart, setShowCart, totalQuantity } =
+    useGlobal() as GlobalContextType;
 
   return (
     <header>

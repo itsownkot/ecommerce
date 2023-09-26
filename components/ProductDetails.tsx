@@ -1,11 +1,12 @@
 "use client";
 import { useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
-import { useGlobal } from "@/lib/context";
+import { AmountActions, useGlobal } from "@/lib/context";
 import { urlFor } from "@/lib/client";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { ProductItem } from "@/types/Product";
 import Link from "next/link";
+import { GlobalContextType } from "@/types/Context";
 
 type Props = {
   product: ProductItem;
@@ -13,7 +14,8 @@ type Props = {
 
 const ProductDetails = ({ product }: Props) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const { amount, dispatch, addToCart, cartItems } = useGlobal();
+  const { amount, dispatch, addToCart, cartItems } =
+    useGlobal() as GlobalContextType;
 
   return (
     <div className="flex gap-3">
@@ -68,7 +70,7 @@ const ProductDetails = ({ product }: Props) => {
           <h4 className="font-bold">Quantity:</h4>
           <div className="flex">
             <span
-              onClick={() => dispatch({ type: "DECREASE_AMOUNT" })}
+              onClick={() => dispatch({ type: AmountActions.DECREASE_AMOUNT })}
               className="flex justify-center items-center w-[35px] h-[35px] border hover:bg-red-500 transition"
             >
               <AiOutlineMinus />
@@ -77,7 +79,7 @@ const ProductDetails = ({ product }: Props) => {
               {amount}
             </span>
             <span
-              onClick={() => dispatch({ type: "INCREASE_AMOUNT" })}
+              onClick={() => dispatch({ type: AmountActions.INCREASE_AMOUNT })}
               className="flex justify-center items-center w-[35px] h-[35px] border hover:bg-red-500 transition"
             >
               <AiOutlinePlus />
